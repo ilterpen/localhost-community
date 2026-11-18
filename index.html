@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<title>localhost Serileri</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Yerleşim: tek sütun, 680px. Üstte marka şeridi, altında seri başlığı ve bölüm listesi. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --ink: #18202c;
+  --muted: #566274;
+  --line: #d3d9e2;
+  --accent: #8a4b00;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10151d;
+    --surface: #171e29;
+    --ink: #e2e7ee;
+    --muted: #95a2b4;
+    --line: #2b3545;
+    --accent: #f1b55a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10151d;
+  --surface: #171e29;
+  --ink: #e2e7ee;
+  --muted: #95a2b4;
+  --line: #2b3545;
+  --accent: #f1b55a;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+}
+p, h1, h2, ol { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sarmal {
+  max-width: 42.5rem;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.serit { border-bottom: 1px solid var(--line); }
+.serit .sarmal { padding-block: 0.65rem; }
+.marka { font-family: var(--mono); font-weight: 600; font-size: 0.9rem; }
+.marka::before { content: "$ "; color: var(--accent); }
+
+main.sarmal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-block: 2rem 3rem;
+}
+.ust {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.15rem);
+  line-height: 1.2;
+  font-weight: 600;
+  text-wrap: balance;
+}
+h2 { font-size: 1.15rem; font-weight: 600; padding-top: 0.5rem; }
+
+.bolumler {
+  list-style: none;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.bolumler li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.bolumler li:last-child { border-bottom: none; }
+.no {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.ad { min-width: 0; flex: 1; }
+.durum {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex: none;
+}
+.bolumler li.yakinda .ad { color: var(--muted); }
+.soluk { color: var(--muted); font-size: 0.9rem; }
+</style>
+
+<header class="serit">
+  <div class="sarmal"><span class="marka">localhost</span></div>
+</header>
+
+<main class="sarmal">
+  <p class="ust">İnteraktif seri</p>
+  <h1>ABAP Cloud: klasik ABAP'tan geçiş</h1>
+  <p>Klasik ABAP yazanlar için adım adım bir geçiş serisi. Her bölüm seviyeni soran birkaç soruyla başlar, kod örnekleriyle ilerler ve kontrol sorularıyla biter.</p>
+
+  <h2>Bölümler</h2>
+  <ol class="bolumler">
+    <li><span class="no">01</span><a class="ad" href="abap-cloud/bolum-01/">ABAP Cloud nedir, ne değildir?</a><span class="durum">taslak</span></li>
+    <li class="yakinda"><span class="no">02</span><span class="ad">Geliştirme ortamı: ADT ve ilk sınıf</span><span class="durum">yakında</span></li>
+    <li class="yakinda"><span class="no">03</span><span class="ad">Released API'ler: MARA yerine ne?</span><span class="durum">yakında</span></li>
+    <li class="yakinda"><span class="no">04</span><span class="ad">CDS view entity ile veri modeli</span><span class="durum">yakında</span></li>
+    <li class="yakinda"><span class="no">05</span><span class="ad">RAP'e giriş: managed ve unmanaged</span><span class="durum">yakında</span></li>
+  </ol>
+
+  <p class="soluk">localhost, yapay zekâ ve yazılım geliştirme üzerine bağımsız bir topluluktur. Yeni bölümler <a href="https://www.linkedin.com/company/localhost-community/" target="_blank" rel="noopener">LinkedIn sayfamızda</a> duyurulur.</p>
+</main>

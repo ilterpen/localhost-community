@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<title>ABAP Cloud Bölüm 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Yerleşim: tek sütun, 680px okuma genişliği. Üstte yapışkan ilerleme şeridi, altında her seferinde tek ekran. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --ink: #18202c;
+  --muted: #566274;
+  --line: #d3d9e2;
+  --accent: #8a4b00;
+  --on-accent: #ffffff;
+  --ok: #17694a;
+  --ok-soft: #e2f2ea;
+  --bad: #a3322b;
+  --bad-soft: #fae8e6;
+  --code-bg: #e9edf2;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10151d;
+    --surface: #171e29;
+    --ink: #e2e7ee;
+    --muted: #95a2b4;
+    --line: #2b3545;
+    --accent: #f1b55a;
+    --on-accent: #1b1303;
+    --ok: #6fd3a6;
+    --ok-soft: #12291f;
+    --bad: #f08a80;
+    --bad-soft: #321916;
+    --code-bg: #0b0f15;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10151d;
+  --surface: #171e29;
+  --ink: #e2e7ee;
+  --muted: #95a2b4;
+  --line: #2b3545;
+  --accent: #f1b55a;
+  --on-accent: #1b1303;
+  --ok: #6fd3a6;
+  --ok-soft: #12291f;
+  --bad: #f08a80;
+  --bad-soft: #321916;
+  --code-bg: #0b0f15;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+p, h1, h2, h3, ul, ol, figure, pre, table { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sarmal {
+  max-width: 42.5rem;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Şerit */
+.serit {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.serit .sarmal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding-block: 0.65rem;
+}
+.marka { font-family: var(--mono); font-weight: 600; font-size: 0.9rem; }
+.marka::before { content: "$ "; color: var(--accent); }
+.taslak {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.05rem 0.4rem;
+}
+.adim {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.cubuk { display: flex; gap: 4px; flex-basis: 100%; }
+.cubuk i { flex: 1; height: 3px; border-radius: 2px; background: var(--line); }
+.cubuk i.dolu { background: var(--accent); }
+
+/* Ekran */
+.ekran {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-block: 2rem 1.5rem;
+}
+.ust {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.15rem);
+  line-height: 1.2;
+  font-weight: 600;
+  text-wrap: balance;
+}
+h1:focus { outline: none; }
+h2 { font-size: 1.15rem; line-height: 1.35; font-weight: 600; text-wrap: balance; }
+h3 { font-size: 1.08rem; line-height: 1.35; font-weight: 600; padding-top: 0.75rem; text-wrap: balance; }
+.soluk { color: var(--muted); }
+
+.govde { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.govde ul, .govde ol, .ozet { padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.45rem; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--code-bg);
+  border-radius: 3px;
+  padding: 0.08em 0.3em;
+  overflow-wrap: anywhere;
+}
+.kod {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  min-width: 0;
+}
+.kod figcaption {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.45rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+.kod pre {
+  padding: 0.9rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+.kod pre code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+
+.tablo { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; min-width: 0; }
+.tablo table { border-collapse: collapse; width: 100%; font-size: 0.9rem; line-height: 1.45; }
+.tablo th, .tablo td { text-align: left; vertical-align: top; padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--line); }
+.tablo th {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--code-bg);
+}
+.tablo tr:last-child td { border-bottom: none; }
+.tablo code { overflow-wrap: normal; white-space: nowrap; background: none; padding: 0; }
+
+/* Soru kartı */
+.kart {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+.etiket {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.secenekler { display: flex; flex-direction: column; gap: 0.5rem; }
+.secenek {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+}
+.secenek .harf { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); flex: none; }
+.secenek .metin { min-width: 0; overflow-wrap: anywhere; }
+.secenek:hover:not(:disabled) { border-color: var(--accent); }
+.secenek:disabled { cursor: default; }
+.secenek.yanlis { background: var(--bad-soft); border-color: var(--bad); color: var(--muted); }
+.secenek.yanlis .harf { color: var(--bad); }
+.secenek.dogru { background: var(--ok-soft); border-color: var(--ok); }
+.secenek.dogru .harf { color: var(--ok); }
+
+.geri {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  scroll-margin-top: 5rem;
+}
+.geri.iyi { background: var(--ok-soft); }
+.geri.kotu { background: var(--bad-soft); }
+.ping { font-family: var(--mono); font-size: 0.75rem; overflow-wrap: anywhere; }
+.geri.iyi .ping { color: var(--ok); }
+.geri.kotu .ping { color: var(--bad); }
+
+.dugme {
+  font: inherit;
+  font-weight: 600;
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+}
+a.dugme { display: inline-block; text-decoration: none; }
+.dugme.ikincil { background: transparent; color: var(--ink); border-color: var(--line); }
+.dugme.ikincil:hover { border-color: var(--accent); }
+.dugme.metin {
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: 400;
+  color: var(--accent);
+  text-decoration: underline;
+}
+.yollar { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.skor { font-family: var(--mono); font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+
+.alt {
+  padding-block: 1rem 3rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  justify-content: space-between;
+}
+</style>
+
+<header class="serit">
+  <div class="sarmal">
+    <span class="marka">localhost</span>
+    <span class="taslak">taslak</span>
+    <span class="adim" id="adim">adım 1/6</span>
+    <div class="cubuk" id="cubuk" aria-hidden="true"></div>
+  </div>
+</header>
+
+<main class="sarmal">
+  <div class="ekran" id="ekran"></div>
+  <footer class="alt">
+    <span>ABAP Cloud serisi · localhost topluluğu</span>
+    <button type="button" class="dugme metin" id="sifirla" data-act="sifirla">Baştan başla</button>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var ANAHTAR = 'lh-abap-cloud-b01-v2';
+  var HARF = ['a', 'b', 'c', 'd'];
+
+  /* Küçük yardımcılar: içerikte ham ABAP yazabilmek için. */
+  function kacis(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function c(s) { return '<code>' + kacis(s) + '</code>'; }
+  function kod(baslik, metin) {
+    return '<figure class="kod"><figcaption>' + baslik + '</figcaption><pre><code>' +
+      kacis(metin.replace(/^\n/, '').replace(/\n\s*$/, '')) + '</code></pre></figure>';
+  }
+  function tablo(basliklar, satirlar) {
+    return '<div class="tablo"><table><thead><tr>' +
+      basliklar.map(function (b) { return '<th scope="col">' + b + '</th>'; }).join('') +
+      '</tr></thead><tbody>' +
+      satirlar.map(function (r) { return '<tr>' + r.map(function (h) { return '<td>' + h + '</td>'; }).join('') + '</tr>'; }).join('') +
+      '</tbody></table></div>';
+  }
+
+  /* İçerik: abap-cloud/bolum-01.md dosyasının karşılığı. */
+  var BOLUM = {
+    baslik: 'ABAP Cloud nedir, ne değildir?',
+    giris: 'Klasik ABAP\'tan gelenler için on dakikalık, kod örnekli bir giriş. Önce üç soruyla nereden başlaman gerektiğini bulalım.',
+    tespit: [
+      {
+        soru: 'Günlük işinde ABAP\'ı nerede yazıyorsun?',
+        secenekler: [
+          { metin: 'SAP GUI\'de: SE80, SE38', puan: 0 },
+          { metin: 'Çoğunlukla SAP GUI, bazen ADT', puan: 1 },
+          { metin: 'Neredeyse hep ADT', puan: 2 },
+          { metin: 'Henüz ABAP yazmıyorum', puan: 0 }
+        ]
+      },
+      {
+        soru: 'CDS view yazdın mı?',
+        secenekler: [
+          { metin: 'Hayır', puan: 0 },
+          { metin: 'Birkaç tane, örneklere bakarak', puan: 1 },
+          { metin: 'Düzenli yazıyorum', puan: 2 }
+        ]
+      },
+      {
+        soru: 'RAP ile uygulama geliştirdin mi?',
+        secenekler: [
+          { metin: 'Sadece adını duydum', puan: 0 },
+          { metin: 'Bir tutorial\'ı tamamladım', puan: 1 },
+          { metin: 'Canlıda çalışan uygulamam var', puan: 2 }
+        ]
+      }
+    ],
+    seviyeler: [
+      {
+        ad: 'Klasik ABAP\'çı',
+        aciklama: 'Bu bölüm tam senin için yazıldı. Anlatımı okuyarak ilerle; her kısmın sonunda bir kontrol sorusu var.',
+        oneri: 'anlatim'
+      },
+      {
+        ad: 'Geçiş yolunda',
+        aciklama: 'Temel sende var. Doğrudan soruları çözebilirsin; bilemediğin soruda ilgili anlatım kendiliğinden açılır.',
+        oneri: 'sorular'
+      },
+      {
+        ad: 'ABAP Cloud\'a girmiş',
+        aciklama: 'Bu bölümü soruları çözerek geç. Dördünü de ilk denemede bilirsen seriye Bölüm 5\'ten (RAP\'e giriş) başlayabilirsin.',
+        oneri: 'sorular'
+      }
+    ],
+    kisimlar: [
+      {
+        baslik: 'Model ve dil sürümü',
+        govde: `
+<p>ABAP Cloud yeni bir dil ya da satın alınan bir ürün değil. Bildiğin ABAP'ın, kurallarını SAP'nin belirlediği bir kullanım biçimi. Sözdizimi aynı; değişen şey neyi kullanmana izin verildiği.</p>
+<p>Adındaki "Cloud" yanıltmasın. Bu model üç yerde kullanılıyor:</p>
+<ul>
+<li>SAP BTP ABAP environment</li>
+<li>SAP S/4HANA Cloud Public Edition</li>
+<li>SAP S/4HANA Cloud Private Edition ve on-premise S/4HANA (2022 sürümünden itibaren)</li>
+</ul>
+<p>İlk ikisinde tek seçenek ABAP Cloud. Private Edition ve on-premise'de klasik ABAP ile aynı sistemde yan yana durur.</p>
+<h3>Teknik karşılığı: ABAP dil sürümü</h3>
+<p>Bir nesnenin ABAP Cloud nesnesi olup olmadığını tek bir özellik belirler: ABAP dil sürümü. Üç değeri var.</p>` +
+          tablo(['Dil sürümü', 'Kapsam', 'Nerede görürsün'], [
+            ['Standard ABAP', 'Kısıtsız: bütün ifadeler, bütün SAP nesneleri', 'Klasik geliştirme'],
+            ['ABAP for Key Users', 'Çok dar bir ifade seti', 'Key user araçlarının ürettiği kod'],
+            ['ABAP for Cloud Development', 'Kısıtlı ifade seti ve yalnızca released API', 'ABAP Cloud']
+          ]) + `
+<p>Bir sınıfın dil sürümünü ADT'de nesnenin Properties görünümünde görürsün.</p>
+<p>On-premise ve Private Edition'da varsayılan dil sürümü pakette ya da software component'te ayarlanır. O pakette yeni oluşturduğun her nesne bu sürümü alır. Paketin ayarını sonradan değiştirmek var olan nesneleri etkilemez.</p>
+<p>Pratik sonucu şu: ABAP Cloud'a başlamak için sistemi dönüştürmen gerekmiyor. Varsayılanı ABAP for Cloud Development olan yeni bir paket açar, yeni geliştirmeyi orada yaparsın. Eski paketlerindeki Z kodu Standard ABAP olarak çalışmaya devam eder.</p>`,
+        soru: {
+          metin: 'On-premise S/4HANA sisteminde ' + c('ZSATIS') + ' paketinin varsayılan dil sürümünü ABAP for Cloud Development yaptın. Pakette üç yıl önce yazılmış ' + c('ZCL_SIPARIS') + ' sınıfı var. Bu sınıfa ne olur?',
+          secenekler: [
+            { metin: 'Dil sürümü kendiliğinden değişir; kısıtlara uymayan satırlar hata verir.', aciklama: 'Paket ayarı var olan nesnelere dokunmaz. Yalnızca o pakette yeni oluşturulan nesneler bu sürümü alır.' },
+            { metin: 'Hiçbir şey. Standard ABAP olarak kalır; ayar yalnızca yeni nesneleri etkiler.', dogru: true, aciklama: 'Dil sürümü nesnenin kendi özelliğidir. Paketteki değer yalnızca yeni nesneler için varsayılandır.' },
+            { metin: 'Çalışmaya devam eder ama artık değiştirilemez.', aciklama: 'Sınıf Standard ABAP olarak kalır ve eskisi gibi değiştirilebilir.' },
+            { metin: 'Sistem, paketteki bütün Z kodunun dönüştürülmesini ister.', aciklama: 'Böyle bir zorunluluk yok. Eski ve yeni kod aynı sistemde, hatta aynı pakette birlikte durabilir.' }
+          ]
+        }
+      },
+      {
+        baslik: 'Dil kapsamı: ne gitti, yerine ne geldi',
+        govde: `
+<p>ABAP for Cloud Development'ta ifade seti daraltılmış. Gidenlerin ortak noktası SAP GUI'ye, sunucunun dosya sistemine ya da eskimiş tekniklere bağlı olmaları.</p>` +
+          tablo(['Klasik ABAP', 'ABAP Cloud\'da'], [
+            [c('WRITE') + ', klasik liste', 'Konsol için ' + c('out->write( )') + ', kullanıcı arayüzü için Fiori'],
+            [c('PARAMETERS') + ', ' + c('CALL SCREEN'), 'Fiori elements arayüzü'],
+            [c('CALL TRANSACTION') + ', ' + c('SUBMIT'), 'Yok; iş mantığı released API üzerinden çağrılır'],
+            [c('OPEN DATASET'), 'Yok'],
+            [c('REPORT'), 'Sınıf; konsoldan çalıştırmak için ' + c('if_oo_adt_classrun')]
+          ]) + `
+<p>İfadelerin yanında, alışık olduğun birçok yardımcı function module ve sınıf da released değil. Çoğunun released bir karşılığı var.</p>` +
+          tablo(['İhtiyaç', 'Klasik', 'ABAP Cloud'], [
+            ['Sistem tarihi, kullanıcı adı', c('sy-datum') + ', ' + c('sy-uname'), c('cl_abap_context_info')],
+            ['UUID üretmek', c('GUID_CREATE'), c('cl_system_uuid')],
+            ['Numara aralığı', c('NUMBER_GET_NEXT'), c('cl_numberrange_runtime')],
+            ['Uygulama logu', c('BAL_LOG_CREATE'), c('cl_bali_log')],
+            ['E-posta', c('cl_bcs'), c('cl_bcs_mail_message')],
+            ['HTTP çağrısı', c('cl_http_client'), c('cl_web_http_client_manager')],
+            ['Arka plan işi', c('JOB_OPEN') + ', ' + c('JOB_CLOSE'), 'Application job (' + c('cl_apj_rt_api') + ')'],
+            ['ALV listesi', c('cl_salv_table'), 'Fiori elements list report']
+          ]) + `
+<p>Bunlardan üçü kodda şöyle görünür:</p>` +
+          kod('ABAP Cloud', `
+CLASS zcl_sistem_bilgisi DEFINITION PUBLIC FINAL CREATE PUBLIC.
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+ENDCLASS.
+
+CLASS zcl_sistem_bilgisi IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    DATA(bugun)     = cl_abap_context_info=>get_system_date( ).
+    DATA(kullanici) = cl_abap_context_info=>get_user_technical_name( ).
+    DATA(kimlik)    = cl_system_uuid=>create_uuid_x16_static( ).
+
+    out->write( |{ kullanici } - { bugun DATE = ISO }| ).
+    out->write( kimlik ).
+  ENDMETHOD.
+ENDCLASS.
+`) + `
+<p>` + c('if_oo_adt_classrun') + ` arayüzünü uygulayan bir sınıfı ADT'de F9 ile çalıştırırsın; ` + c('out->write( )') + ` çıktısı ADT konsoluna düşer. SE38'deki "yaz, F8'e bas, sonucu gör" alışkanlığının karşılığı bu.</p>
+<p>Şimdi tersine bak. Klasik alışkanlıkla yazılmış aynı tür bir sınıf:</p>` +
+          kod('Aktive olmaz', `
+CLASS zcl_hatali_ornek IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    SELECT matnr, mtart
+      FROM mara                     " hata: MARA released değil
+      WHERE mtart = 'FERT'
+      INTO TABLE @DATA(lt_mara).
+
+    LOOP AT lt_mara INTO DATA(ls_mara).
+      WRITE: / ls_mara-matnr.       " hata: WRITE bu dil sürümünde yok
+    ENDLOOP.
+
+    CALL TRANSACTION 'MM03'.        " hata: CALL TRANSACTION bu dil sürümünde yok
+  ENDMETHOD.
+ENDCLASS.
+`) + `
+<p>Bu sınıf aktive olmaz. ` + c('SELECT') + ` sözdizimi, ` + c('LOOP') + ` ve satır içi ` + c('DATA( )') + ` tanımı sorun değil; sorun işaretli üç satırda.</p>`,
+        soru: {
+          metin: 'Aşağıdaki satırlardan hangisi ABAP for Cloud Development dil sürümündeki bir sınıfta derlenir?',
+          secenekler: [
+            { metin: c('DATA(bugun) = cl_abap_context_info=>get_system_date( ).'), dogru: true, aciklama: c('cl_abap_context_info') + ' released bir sınıf; sistem tarihi ve kullanıcı bilgisi buradan alınır.' },
+            { metin: c('SUBMIT zrapor AND RETURN.'), aciklama: c('SUBMIT') + ' bu dil sürümünde yok. Çalıştırılabilir program kavramı ABAP Cloud\'da bulunmuyor.' },
+            { metin: c('OPEN DATASET lv_dosya FOR INPUT IN TEXT MODE ENCODING DEFAULT.'), aciklama: 'Sunucunun dosya sistemine erişen ifadeler bu dil sürümünde yok.' },
+            { metin: c('CALL FUNCTION \'GUID_CREATE\' IMPORTING ev_guid_16 = lv_guid.'), aciklama: c('CALL FUNCTION') + ' ifadesi var ama ' + c('GUID_CREATE') + ' released değil. Karşılığı ' + c('cl_system_uuid') + '.' }
+          ]
+        }
+      },
+      {
+        baslik: 'Released API: neye erişebilirim?',
+        govde: `
+<p>İkinci kural ilkinden daha çok iş çıkarır. Kendi Z nesnelerin dışında yalnızca SAP'nin release ettiği nesneleri kullanabilirsin. Tablo, CDS view, sınıf, function module, veri elemanı; hepsi için geçerli.</p>
+<h3>Release contract</h3>
+<p>"Released" tek bir bayrak değil. Her nesne hangi kullanım için release edildiğini bir sözleşmeyle belirtir. Günlük işte üçü karşına çıkar:</p>` +
+          tablo(['Sözleşme', 'Anlamı', 'Ne zaman bakarsın'], [
+            ['C1 — Use System-Internally', 'Aynı sistemdeki ABAP kodundan kullanmak', 'Bir nesneyi çağıracak ya da okuyacaksan'],
+            ['C0 — Extend', 'Nesneyi genişletmek', 'Bir CDS view\'a alan ekleyeceksen'],
+            ['C2 — Use as Remote API', 'Sistem dışından çağırmak', 'OData servisi tüketeceksen']
+          ]) + `
+<p>ABAP Cloud kodundan kullanmak için nesnenin C1 ile release edilmiş ve "Use in Cloud Development" olarak işaretlenmiş olması gerekir. Bunu ADT'de nesnenin Properties görünümündeki API State sekmesinden görürsün.</p>
+<h3>MARA yerine ne?</h3>
+<p>SAP, released olmayan pek çok nesne için bir successor, yani yerine kullanılacak nesne tanımlıyor. ` + c('MARA') + ` için bu ` + c('I_Product') + `. Successor'ı bulmanın üç yolu var:</p>
+<ul>
+<li>ADT'de ` + c('MARA') + `'yı açıp API State sekmesine bakmak</li>
+<li>SAP'nin GitHub'daki Cloudification Repository'sinde nesne adını aramak</li>
+<li>ADT'de Project Explorer'daki Released Objects ağacını gezmek</li>
+</ul>
+<h3>Uçtan uca örnek: bir raporu çevirmek</h3>
+<p>Mamul ürünleri açıklamalarıyla listeleyen klasik rapor:</p>` +
+          kod('Klasik ABAP', `
+REPORT zklasik_urun_listesi.
+
+PARAMETERS p_mtart TYPE mtart DEFAULT 'FERT'.
+
+SELECT a~matnr, a~mtart, t~maktx
+  FROM mara AS a
+  INNER JOIN makt AS t ON t~matnr = a~matnr
+  WHERE a~mtart = @p_mtart
+    AND t~spras = @sy-langu
+  INTO TABLE @DATA(lt_urun).
+
+LOOP AT lt_urun INTO DATA(ls_urun).
+  WRITE: / ls_urun-matnr, ls_urun-mtart, ls_urun-maktx.
+ENDLOOP.
+`) + `
+<p>Aynı işin ABAP Cloud karşılığı:</p>` +
+          kod('ABAP Cloud', `
+CLASS zcl_urun_listesi DEFINITION PUBLIC FINAL CREATE PUBLIC.
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+ENDCLASS.
+
+CLASS zcl_urun_listesi IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    DATA(dil) = cl_abap_context_info=>get_user_language_abap_format( ).
+
+    SELECT FROM I_Product AS p
+      INNER JOIN I_ProductText AS t ON t~Product = p~Product
+      FIELDS p~Product, p~ProductType, t~ProductName
+      WHERE p~ProductType = 'FERT'
+        AND t~Language    = @dil
+      INTO TABLE @DATA(products).
+
+    out->write( products ).
+  ENDMETHOD.
+ENDCLASS.
+`) + `
+<p>Satır satır eşleme:</p>` +
+          tablo(['Klasik', 'ABAP Cloud'], [
+            [c('MARA-MATNR'), c('I_Product-Product')],
+            [c('MARA-MTART'), c('I_Product-ProductType')],
+            [c('MAKT-MAKTX'), c('I_ProductText-ProductName')],
+            [c('MAKT-SPRAS'), c('I_ProductText-Language')],
+            [c('sy-langu'), c('cl_abap_context_info=>get_user_language_abap_format( )')],
+            [c('WRITE'), c('out->write( )')]
+          ]) + `
+<p>Üç şeye dikkat et. Alan adları artık kısaltma değil, okunur adlar. Seçim ekranı yok; bu örnekte ürün tipi sabit, gerçek uygulamada filtre Fiori arayüzünden gelir. Çıktı ekrana değil ADT konsoluna gider.</p>`,
+        soru: {
+          metin: c('ZCL_FATURA') + ' sınıfın ABAP for Cloud Development dil sürümünde. İçinden bir SAP sınıfının metodunu çağırmak istiyorsun. SAP sınıfının API State sekmesinde ne görmen gerekir?',
+          secenekler: [
+            { metin: 'C0 (Extend)', aciklama: 'C0 nesneyi genişletmek içindir, çağırmak için değil.' },
+            { metin: 'C1 (Use System-Internally) ve "Use in Cloud Development"', dogru: true, aciklama: 'Aynı sistemdeki ABAP Cloud kodundan kullanım için gereken sözleşme C1\'dir.' },
+            { metin: 'C2 (Use as Remote API)', aciklama: 'C2 sistem dışından yapılan çağrılar içindir.' },
+            { metin: 'Herhangi bir release contract yeterlidir.', aciklama: 'Sözleşmeler kullanım biçimine göre ayrılır. Koddan çağırmak için C1 gerekir.' }
+          ]
+        }
+      },
+      {
+        baslik: 'Derleyici ve kaçış yolu',
+        govde: `
+<p>Klasik dünyada "SAP tablosuna doğrudan yazma" gibi kurallar kılavuzda dururdu; uyup uymamak ekibe kalırdı. ABAP Cloud'da kuralı derleyici uygular. Released olmayan bir nesne kullanırsan syntax hatası alırsın ve nesneyi aktive edemezsin.</p>
+<p>Karşılığında SAP bir söz veriyor: released API'ler upgrade'lerde uyumlu kalır. Kodun yalnızca bu API'lere dayandığında upgrade sonrası bozulma riski düşer. Clean Core'un temeli bu.</p>
+<h3>Released API yoksa?</h3>
+<p>Gerçek projede er geç released karşılığı olmayan bir BAPI'ye ihtiyaç duyarsın. Yol, bulunduğun sisteme göre değişir.</p>
+<ul>
+<li><strong>Public Edition ve BTP ABAP environment:</strong> Klasik ABAP yazamazsın. Released bir API'nin çıkmasını beklemek ya da ihtiyacı uzaktan API ile çözmek gerekir.</li>
+<li><strong>Private Edition ve on-premise:</strong> Wrapper yazarsın. Standard ABAP dil sürümünde bir sınıf, released olmayan BAPI'yi çağırır. Bu sınıfı kendin C1 sözleşmesiyle release edersin. ABAP Cloud kodun BAPI'yi değil, senin wrapper'ını çağırır.</li>
+</ul>
+<p>Wrapper bir kaçamak değil, kontrollü bir sınırdır. Released olmayan nesneye bağımlılık tek bir sınıfta toplanır. SAP ileride released bir API çıkardığında yalnızca wrapper'ın içini değiştirirsin. Clean Core seviyelerinde bu tür kod saf ABAP Cloud koduyla aynı seviyede sayılmaz; ayrıntısı Bölüm 8 ve 9'da.</p>
+<h3>Mevcut Z kodu</h3>
+<p>Private Edition ve on-premise'de klasik ABAP çalışmaya devam eder. Geçiş tek seferlik bir dönüşüm değil, yeni geliştirmeyle başlayan kademeli bir yol.</p>`,
+        soru: {
+          metin: 'On-premise S/4HANA\'dasın. ABAP Cloud ile yazdığın uygulamanın, released karşılığı olmayan bir BAPI\'yi çağırması gerekiyor. Doğru yol hangisi?',
+          secenekler: [
+            { metin: 'ABAP Cloud sınıfından BAPI\'yi doğrudan çağırıp ATC istisnası almak.', aciklama: 'Derleyici buna izin vermez. İstisna ATC bulgusu için alınır, syntax hatası için değil.' },
+            { metin: 'Uygulamanın tamamını Standard ABAP\'a çevirmek.', aciklama: 'Tek bir bağımlılık için bütün uygulamayı kısıtsız bırakmak gerekmez.' },
+            { metin: 'Standard ABAP\'ta bir wrapper sınıfı yazıp C1 ile release etmek ve ABAP Cloud kodundan onu çağırmak.', dogru: true, aciklama: 'Bağımlılık tek sınıfta toplanır; ABAP Cloud kodun temiz kalır.' },
+            { metin: 'BAPI\'nin kodunu bir Z function module\'e kopyalamak.', aciklama: 'Kopyalanan kod da released olmayan nesneleri kullanır ve SAP\'nin düzeltmelerini almaz.' }
+          ]
+        }
+      }
+    ],
+    ozet: [
+      'ABAP Cloud ürün ya da yeni dil değil. Nesnenin dil sürümü "ABAP for Cloud Development" ise o nesne ABAP Cloud kurallarına tabidir.',
+      'Dil kapsamı dar: ' + c('WRITE') + ', dynpro, ' + c('SUBMIT') + ', ' + c('CALL TRANSACTION') + ' ve dosya erişimi yok. Çoğu yardımcının released bir karşılığı var.',
+      'SAP nesnelerine yalnızca C1 ile release edilmiş API\'ler üzerinden erişilir. ' + c('MARA') + ' yerine ' + c('I_Product') + '.',
+      'Kuralı derleyici uygular. Released API yoksa on-premise ve Private Edition\'da wrapper yazılır.'
+    ],
+    sonraki: 'Bölüm 2 — Geliştirme ortamı: ADT ve ilk sınıf',
+    sayfa: 'https://www.linkedin.com/company/localhost-community/'
+  };
+
+  var TOPLAM = BOLUM.kisimlar.length + 2;
+
+  function bosKisim() { return { yanlis: [], son: -1, dogru: false, ilk: false, acik: false }; }
+  function bosDurum() {
+    return { ekran: 'tespit', ti: 0, puan: 0, seviye: 0, mod: '', ki: 0, kisim: BOLUM.kisimlar.map(bosKisim) };
+  }
+  function yukle() {
+    try {
+      var v = JSON.parse(localStorage.getItem(ANAHTAR) || 'null');
+      if (v && typeof v.ekran === 'string' && Array.isArray(v.kisim) && v.kisim.length === BOLUM.kisimlar.length) return v;
+    } catch (e) { /* depolama yoksa baştan başlar */ }
+    return null;
+  }
+  function kaydet() {
+    try { localStorage.setItem(ANAHTAR, JSON.stringify(S)); } catch (e) { /* kaydedilemese de sayfa çalışır */ }
+  }
+
+  var S = yukle() || bosDurum();
+  var ekran = document.getElementById('ekran');
+  var adim = document.getElementById('adim');
+  var cubuk = document.getElementById('cubuk');
+  var sifirla = document.getElementById('sifirla');
+
+  for (var n = 0; n < TOPLAM; n++) cubuk.appendChild(document.createElement('i'));
+
+  function seviyeBul(puan) { return puan <= 2 ? 0 : (puan <= 4 ? 1 : 2); }
+  function ilkDogruSayisi() { return S.kisim.filter(function (k) { return k.ilk; }).length; }
+
+  function secenekHtml(act, i, metin, sinif, kapali) {
+    return '<button type="button" class="secenek' + (sinif ? ' ' + sinif : '') + '" data-act="' + act + '" data-i="' + i + '"' +
+      (kapali ? ' disabled' : '') + '><span class="harf">[' + HARF[i] + ']</span><span class="metin">' + metin + '</span></button>';
+  }
+
+  function tespitHtml() {
+    var q = BOLUM.tespit[S.ti];
+    return '<p class="ust">ABAP Cloud serisi · Bölüm 1</p>' +
+      '<h1 tabindex="-1">' + BOLUM.baslik + '</h1>' +
+      '<p>' + BOLUM.giris + '</p>' +
+      '<section class="kart">' +
+      '<p class="etiket">Seviye tespiti · soru ' + (S.ti + 1) + '/' + BOLUM.tespit.length + '</p>' +
+      '<h2>' + q.soru + '</h2>' +
+      '<div class="secenekler">' +
+      q.secenekler.map(function (s, i) { return secenekHtml('tespit', i, s.metin, '', false); }).join('') +
+      '</div></section>';
+  }
+
+  function seviyeHtml() {
+    var sv = BOLUM.seviyeler[S.seviye];
+    var anlatim = '<button type="button" class="dugme' + (sv.oneri === 'anlatim' ? '' : ' ikincil') + '" data-act="mod" data-mod="anlatim">Anlatımla ilerle</button>';
+    var sorular = '<button type="button" class="dugme' + (sv.oneri === 'sorular' ? '' : ' ikincil') + '" data-act="mod" data-mod="sorular">Sadece soruları çöz</button>';
+    return '<p class="ust">Seviye tespiti tamam</p>' +
+      '<h1 tabindex="-1">Seviyen: ' + sv.ad + '</h1>' +
+      '<p>' + sv.aciklama + '</p>' +
+      '<div class="yollar">' + (sv.oneri === 'anlatim' ? anlatim + sorular : sorular + anlatim) + '</div>' +
+      '<p class="soluk">Öne çıkan seçenek cevaplarına göre önerilen yol. İstediğini seçebilirsin.</p>';
+  }
+
+  function dersHtml() {
+    var k = BOLUM.kisimlar[S.ki];
+    var d = S.kisim[S.ki];
+    var govdeAcik = S.mod === 'anlatim' || d.acik;
+    var son = S.ki === BOLUM.kisimlar.length - 1;
+    var html = '<p class="ust">Kısım ' + (S.ki + 1) + '/' + BOLUM.kisimlar.length + '</p>' +
+      '<h1 tabindex="-1">' + k.baslik + '</h1>';
+
+    if (govdeAcik) {
+      html += '<div class="govde" id="govde">' + k.govde + '</div>';
+    } else {
+      html += '<p class="soluk">Anlatımı atladın. Soruyu bilemezsen bu kısmın anlatımı burada açılır. ' +
+        '<button type="button" class="dugme metin" data-act="ac">Anlatımı şimdi göster</button></p>';
+    }
+
+    html += '<section class="kart"><p class="etiket">Kontrol sorusu</p><h2>' + k.soru.metin + '</h2><div class="secenekler">';
+    html += k.soru.secenekler.map(function (s, i) {
+      var yanlis = d.yanlis.indexOf(i) !== -1;
+      var sinif = yanlis ? 'yanlis' : (d.dogru && s.dogru ? 'dogru' : '');
+      return secenekHtml('cevap', i, s.metin, sinif, d.dogru || yanlis);
+    }).join('');
+    html += '</div>';
+
+    if (d.dogru) {
+      var dogruSecenek = k.soru.secenekler.filter(function (s) { return s.dogru; })[0];
+      html += '<div class="geri iyi" id="geri" role="status">' +
+        '<p class="ping">64 bytes from 127.0.0.1: icmp_seq=' + (S.ki + 1) + ' time=0.042 ms</p>' +
+        '<p><strong>Doğru.</strong> ' + dogruSecenek.aciklama + '</p>' +
+        '<div><button type="button" class="dugme" data-act="ileri">' + (son ? 'Sonucu gör' : 'Sıradaki kısım') + '</button></div>' +
+        '</div>';
+    } else if (d.son !== -1) {
+      html += '<div class="geri kotu" id="geri" role="status">' +
+        '<p class="ping">Request timeout for icmp_seq ' + (S.ki + 1) + '</p>' +
+        '<p><strong>Yanlış.</strong> ' + k.soru.secenekler[d.son].aciklama + '</p>' +
+        '<p>' + (S.mod === 'sorular' ? 'Bu kısmın anlatımını yukarıda açtık. Okuyup yeniden dene.' : 'Yukarıdaki anlatıma bir daha bak ve yeniden dene.') + '</p>' +
+        '</div>';
+    }
+    html += '</section>';
+    return html;
+  }
+
+  function sonucHtml() {
+    var dogru = ilkDogruSayisi();
+    var toplam = BOLUM.kisimlar.length;
+    var oneri;
+    if (S.seviye === 2 && dogru === toplam) {
+      oneri = 'Temel sende sağlam. Seriye Bölüm 5\'ten (RAP\'e giriş) devam edebilirsin; aradaki bölümler sana tekrar gelir.';
+    } else if (dogru <= toplam / 2 - 1) {
+      oneri = 'Sıradaki bölüme geçmeden bu bölümü anlatımıyla bir kez daha okumanı öneririz.';
+    } else {
+      oneri = 'Sıradaki bölüme hazırsın.';
+    }
+    return '<p class="ust">Bölüm 1 tamam</p>' +
+      '<h1 tabindex="-1">' + BOLUM.baslik + '</h1>' +
+      '<p class="skor">İlk denemede doğru: ' + dogru + ' / ' + toplam + '</p>' +
+      '<p>' + oneri + '</p>' +
+      '<h2>Bu bölümden akılda kalması gerekenler</h2>' +
+      '<ul class="ozet">' + BOLUM.ozet.map(function (o) { return '<li>' + o + '</li>'; }).join('') + '</ul>' +
+      '<section class="kart">' +
+      '<p class="etiket">Sıradaki · yakında</p>' +
+      '<h2>' + BOLUM.sonraki + '</h2>' +
+      '<p>Yeni bölümler localhost sayfasında duyurulur. Yanlış ya da eksik gördüğün bir şey varsa gönderinin altına yaz.</p>' +
+      '<div><a class="dugme" href="' + BOLUM.sayfa + '" target="_blank" rel="noopener">localhost sayfasını aç</a></div>' +
+      '</section>';
+  }
+
+  function adimNo() {
+    if (S.ekran === 'ders') return 2 + S.ki;
+    if (S.ekran === 'sonuc') return TOPLAM;
+    return 1;
+  }
+
+  /* odak: 'bas' → ekran değişti, başa dön; 'geri' → cevap verildi, geri bildirimi göster; 'govde' → anlatım açıldı */
+  function ciz(odak) {
+    var html;
+    if (S.ekran === 'tespit') html = tespitHtml();
+    else if (S.ekran === 'seviye') html = seviyeHtml();
+    else if (S.ekran === 'ders') html = dersHtml();
+    else html = sonucHtml();
+    ekran.innerHTML = html;
+
+    var no = adimNo();
+    adim.textContent = 'adım ' + no + '/' + TOPLAM;
+    Array.prototype.forEach.call(cubuk.children, function (el, i) { el.className = i < no ? 'dolu' : ''; });
+    sifirla.hidden = S.ekran === 'tespit' && S.ti === 0;
+
+    kaydet();
+
+    var h1 = ekran.querySelector('h1');
+    if (odak === 'bas') {
+      window.scrollTo(0, 0);
+      if (h1) h1.focus({ preventScroll: true });
+    } else if (odak === 'govde') {
+      window.scrollTo(0, 0);
+    } else if (odak === 'geri') {
+      var g = document.getElementById('geri');
+      if (g) g.scrollIntoView({ block: 'nearest' });
+      var ileri = g && g.querySelector('[data-act="ileri"]');
+      if (ileri) ileri.focus({ preventScroll: true });
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!b || b.disabled) return;
+    var act = b.getAttribute('data-act');
+    var i = parseInt(b.getAttribute('data-i'), 10);
+
+    if (act === 'tespit') {
+      S.puan += BOLUM.tespit[S.ti].secenekler[i].puan;
+      S.ti += 1;
+      if (S.ti >= BOLUM.tespit.length) {
+        S.seviye = seviyeBul(S.puan);
+        S.ekran = 'seviye';
+      }
+      ciz('bas');
+    } else if (act === 'mod') {
+      S.mod = b.getAttribute('data-mod');
+      S.ekran = 'ders';
+      S.ki = 0;
+      ciz('bas');
+    } else if (act === 'ac') {
+      S.kisim[S.ki].acik = true;
+      ciz('govde');
+    } else if (act === 'cevap') {
+      var d = S.kisim[S.ki];
+      var s = BOLUM.kisimlar[S.ki].soru.secenekler[i];
+      if (d.dogru) return;
+      d.son = i;
+      if (s.dogru) {
+        d.dogru = true;
+        d.ilk = d.yanlis.length === 0;
+        ciz('geri');
+      } else {
+        if (d.yanlis.indexOf(i) === -1) d.yanlis.push(i);
+        var yeniAcildi = S.mod === 'sorular' && !d.acik;
+        d.acik = true;
+        ciz(yeniAcildi ? 'govde' : 'geri');
+      }
+    } else if (act === 'ileri') {
+      if (S.ki < BOLUM.kisimlar.length - 1) { S.ki += 1; } else { S.ekran = 'sonuc'; }
+      ciz('bas');
+    } else if (act === 'sifirla') {
+      S = bosDurum();
+      ciz('bas');
+    }
+  });
+
+  ciz('');
+})();
+</script>
